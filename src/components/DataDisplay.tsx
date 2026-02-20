@@ -1,7 +1,21 @@
 import { use } from "react";
 
 interface Props {
-  dataPromise: Promise<unknown>;
+  dataPromise: Promise<TeamEvaluation>;
+}
+
+interface Team {
+  team_id: number;
+  team_name: string;
+  evaluation: {
+    ALL: {
+      fm_top: number;
+    };
+  };
+}
+
+interface TeamEvaluation {
+  rosters_evaluation: Team[];
 }
 
 function DataDisplay({ dataPromise }: Props) {

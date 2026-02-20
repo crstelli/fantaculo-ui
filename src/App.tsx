@@ -1,12 +1,16 @@
 import { Suspense } from "react";
 import { DataDisplay } from "./components/DataDisplay";
+import { MantineProvider } from "@mantine/core";
+import { PlayerListTable } from "./components/PlayerListTable";
+import { AgGridProvider } from "ag-grid-react";
+import { AllCommunityModule } from "ag-grid-community";
 
 const PAYLOAD = {
   competition_id: 368811,
   league_name: "fantaantoniosavarese",
 };
 
-async function fetchData() {
+async function fetchTeamData() {
   const res = await fetch(
     "https://fantaculo.it/pyengine-srv/api/v1/valutatore/lega",
     {
@@ -26,11 +30,29 @@ async function fetchData() {
   return data;
 }
 
+async function fetchPlayerList() {
+  const res = await fetch(
+    "https://fantaculo.it/leghe-srv/api/v1/aste/listone?credits=500&flagNoGoal=true&flagModDefense=false&competitionParticipants=8&name=null&flagSvincolati=false&flagMantra=false&auctionType=pma",
+  );
+
+  const json = await res.json();
+  return json;
+}
+
+const modules = [AllCommunityModule];
+
 export default function App() {
-  const dataPromise = fetchData();
+  const playerListPromise = fetchPlayerList();
+  const teamDataPromise = fetchTeamData();
+
   return (
-    <Suspense fallback={"Loading"}>
-      <DataDisplay dataPromise={dataPromise} />
-    </Suspense>
+    <MantineProvider>
+      <Suspense fallback={"Loading"}>
+        <DataDisplay dataPromise={teamDataPromise} />
+        <AgGridProvider modules={modules}>
+          <PlayerListTable dataPromise={playerListPromise} />
+        </AgGridProvider>
+      </Suspense>
+    </MantineProvider>
   );
 }

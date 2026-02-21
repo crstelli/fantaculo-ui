@@ -14,7 +14,7 @@ interface Player {
   expectedTitolarita: string;
 }
 
-function PlayerListTable({ dataPromise }: Props) {
+function PlayerList({ dataPromise }: Props) {
   const rows = use(dataPromise);
 
   const cols: ColDef<Player>[] = [
@@ -37,4 +37,4 @@ function PlayerListTable({ dataPromise }: Props) {
   );
 }
 
-export { PlayerListTable };
+export { PlayerList };

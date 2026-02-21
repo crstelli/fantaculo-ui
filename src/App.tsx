@@ -1,9 +1,11 @@
+import "@mantine/core/styles.css";
+
 import { Suspense } from "react";
-import { DataDisplay } from "./components/DataDisplay";
-import { MantineProvider } from "@mantine/core";
-import { PlayerListTable } from "./components/PlayerListTable";
+import { MantineProvider, Tabs } from "@mantine/core";
+import { PlayerList } from "./pages/playerList/PlayerListTable";
 import { AgGridProvider } from "ag-grid-react";
 import { AllCommunityModule } from "ag-grid-community";
+import { Leaderboard } from "./pages/leaderboard/Leaderboard";
 
 const PAYLOAD = {
   competition_id: 368811,
@@ -47,12 +49,22 @@ export default function App() {
 
   return (
     <MantineProvider>
-      <Suspense fallback={"Loading"}>
-        <DataDisplay dataPromise={teamDataPromise} />
-        <AgGridProvider modules={modules}>
-          <PlayerListTable dataPromise={playerListPromise} />
-        </AgGridProvider>
-      </Suspense>
+      <AgGridProvider modules={modules}>
+        <Tabs defaultValue="leaderboard" h={"100vh"}>
+          <Tabs.List>
+            <Tabs.Tab value="playerList">Listone</Tabs.Tab>
+            <Tabs.Tab value="leaderboard">Classifica</Tabs.Tab>
+          </Tabs.List>
+          <Suspense fallback={"Loading"}>
+            <Tabs.Panel h={"100%"} value="leaderboard">
+              <Leaderboard dataPromise={teamDataPromise} />
+            </Tabs.Panel>
+            <Tabs.Panel h={"100%"} value="playerList">
+              <PlayerList dataPromise={playerListPromise} />
+            </Tabs.Panel>
+          </Suspense>
+        </Tabs>
+      </AgGridProvider>
     </MantineProvider>
   );
 }
